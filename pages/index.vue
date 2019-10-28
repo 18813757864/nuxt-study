@@ -1,72 +1,118 @@
+<!--
+ * @Author: your name
+ * @Date: 2019-10-28 15:46:41
+ * @LastEditTime: 2019-10-28 16:06:12
+ * @LastEditors: Please set LastEditors
+ * @Description: In User Settings Edit
+ * @FilePath: \3B-mobiled:\work\nuxt-study\pages\index.vue
+ -->
 <template>
-  <div class="container">
-    <div>
-      <logo />
-      <h1 class="title">
-        nuxt-study
-      </h1>
-      <h2 class="subtitle">
-        My wonderful Nuxt.js project
-      </h2>
-      <div class="links">
-        <a
-          href="https://nuxtjs.org/"
-          target="_blank"
-          class="button--green"
-        >
-          Documentation
-        </a>
-        <a
-          href="https://github.com/nuxt/nuxt.js"
-          target="_blank"
-          class="button--grey"
-        >
-          GitHub
-        </a>
-      </div>
-    </div>
+  <div id="app">
+    <header class="header">
+      <!-- <the-header></the-header> -->
+    </header>
+    <!-- <router-view/> -->
+    <!-- <the-footer></the-footer> -->
   </div>
 </template>
 
 <script>
-import Logo from '~/components/Logo.vue'
+// import TheHeader from '@/components/TheHeader.vue'
+// import TheFooter from '@/components/TheFooter.vue'
 
 export default {
+  name: 'app',
   components: {
-    Logo
+    // TheHeader,
+    // TheFooter
   }
 }
 </script>
+<style  lang="scss">
+html{
+  height: 100%;
+  overflow: hidden;
+  width: 100vw;
+}
+body{
+  overflow: hidden;
+  width: 100vw;
+}
+#app {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-family:Noto Sans S Chinese 'Avenir', Helvetica, Arial, sans-serif;
+  // height: 100vh;
+  // overflow: auto;
+}
+.header{
+  height: 104px;
+  background:rgba(0,0,0,0.5);
+  position: fixed;
+  width: 100%;
+  line-height: 104px;
+  top: 0;
+  left: 0;
+  z-index: 1000;
+}
+#modal-center {
+  .modal-dialog .modal-in {
+    text-align: center;
+    color: #303030;
+    font-size: 14px;
+  }
+  .modal-header {
+    padding: 5px 10px;
+    border-bottom: none;
+  }
+  .modal-body {
+    p {
+      margin: 0;
+    }
+    .big-code {
+      padding: 40px 0;
+    }
+  }
+}
+::-webkit-scrollbar-track-piece { //滚动条凹槽的颜色，还可以设置边框属性
 
-<style>
-.container {
-  margin: 0 auto;
-  min-height: 100vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  text-align: center;
+background-color:#f8f8f8;
+
 }
 
-.title {
-  font-family: 'Quicksand', 'Source Sans Pro', -apple-system, BlinkMacSystemFont,
-    'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-  display: block;
-  font-weight: 300;
-  font-size: 100px;
-  color: #35495e;
-  letter-spacing: 1px;
+::-webkit-scrollbar {//滚动条的宽度
+
+width:9px;
+
+height:9px;
+
 }
 
-.subtitle {
-  font-weight: 300;
-  font-size: 42px;
-  color: #526488;
-  word-spacing: 5px;
-  padding-bottom: 15px;
+::-webkit-scrollbar-thumb {//滚动条的设置
+
+background-color:#dddddd;
+
+background-clip:padding-box;
+
+min-height:28px;
+
 }
 
-.links {
-  padding-top: 15px;
+::-webkit-scrollbar-thumb:hover {
+
+background-color:#bbb;
+
+}
+@media (min-width: 1200px){
+  #app .container{
+    padding: 0;
+    max-width: 1200px;
+  }
+}
+@media (max-width: 992px) {
+  .header {
+    background: none;
+  }
 }
 </style>
+
