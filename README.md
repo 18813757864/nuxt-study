@@ -1,6 +1,6 @@
 # nuxt-study
 
-> My super Nuxt.js project
+> My wonderful Nuxt.js project
 
 ## Build Setup
 
