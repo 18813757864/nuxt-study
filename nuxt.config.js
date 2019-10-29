@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2019-10-28 15:46:41
- * @LastEditTime: 2019-10-28 17:53:22
+ * @LastEditTime: 2019-10-29 16:57:35
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \3B-mobiled:\work\nuxt-study\nuxt.config.js
@@ -13,7 +13,7 @@ module.exports = {
   ** Headers of the page
   */
   head: {
-    title: process.env.npm_package_name || '',
+    title:'3B互联',
     meta: [
       { charset: 'utf-8' },
       { name: 'viewport', content: 'width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no' },
@@ -41,12 +41,11 @@ module.exports = {
   ** Plugins to load before mounting the App
   */
   plugins: [
-    {
-      src: '~plugins/three_sides/flexble.js', ssr: false
-    }
+    { src: '~plugins/flexble.js', ssr: false },
+    { src: '~/plugins/axios', ssr: false }
   ],
   postcss: [
-    require('postcss-px2rem')({
+    require('postcss-pxtorem')({
       // remUnit: 37.5,
       propList: ['*'],
       rootValue: 37.5, //默认根目录字体大小(px)
@@ -69,12 +68,9 @@ module.exports = {
   /*
   ** Nuxt.js modules
   */
-  modules: [
-    // Doc: https://bootstrap-vue.js.org
-    'bootstrap-vue/nuxt',
-    // Doc: https://axios.nuxtjs.org/usage
-    '@nuxtjs/axios',
-    '@nuxtjs/pwa',
+    // ...
+    modules: [
+      '@nuxtjs/axios',
   ],
   /*
   ** Axios module configuration
@@ -82,15 +78,15 @@ module.exports = {
   */
   axios: {
     proxy: true,
-    prefix: '/api', // baseURL
+    prefix: '', // baseURL  前置
     credentials: true,
   },
   proxy: {
-    '/api/': {
-      target: 'https://api.3b.link', // 代理地址
+    '/api': {
+      target: 'https://api.3b.link/Api', // 代理地址
       changeOrigin: true,
       pathRewrite: {
-        '^/api': ''
+        '^/api': ''  //将 /api 替换掉
       },
     },
   },
