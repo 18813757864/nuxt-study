@@ -1,7 +1,7 @@
 <!--
  * @Author: wuwf
  * @Date: 2019-10-28 15:46:41
- * @LastEditTime: 2019-10-29 11:03:11
+ * @LastEditTime: 2019-10-31 09:42:21
  * @LastEditors: Please set LastEditors
  * @Description:
  * @FilePath: \3B-mobiled:\work\nuxt-study\pages\index.vue
@@ -14,11 +14,12 @@
 
 <script>
 export default {
-  name: 'app',
-  components: {
-
+  name: "app",
+  components: {},
+  created: function() {
+    this.$router.push("/brochures"); // 页面加载时跳转
   }
-}
+};
 </script>
 <style>
 /* 公共样式 */
@@ -44,7 +45,7 @@ body {
   font-size: 18px;
   font-weight: 800;
 }
-.mint-msgbox{
+.mint-msgbox {
   max-width: 7rem;
 }
 </style>

@@ -46,7 +46,7 @@
 </template>
 
 <script>
-// import { MessageBox } from "mint-ui";
+import { MessageBox } from "mint-ui";
 // import detailsApi from "../../api/details";
 // import homeApi from "../../api/home";
 // import touch from "@/utils/touch";
@@ -73,62 +73,37 @@ export default {
     // console.log(app);
   },
   async asyncData({ app }) {
-    console.log('11111111111111111111111111111111111111111111111111111111111111111')
-    console.log(app.context.query.id);
-    const token =
+    console.log('111111111111111222222222222222111111111111111111111');
+    // console.log(app.$api.Authorization);
+    console.log('111111111111111122222222222222222222222111111111111111111');
+  const token =
       "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6IjAiLCJqdGkiOiI5ZWE3NjQwMWMwNDc0ZTA1ODBjY2U1NDMxNDJjMjFiMCIsIlVzZXJJRCI6IjAiLCJQaG9uZSI6IiIsIld4T3BlbklkIjoiIiwiV3hTZXNzaW9uS2V5IjoiIiwicm9sZSI6WyJDbGllbnRVc2VyIiwiIl0sIm5iZiI6MTU2NjM2MjE0NywiZXhwIjoyNTM0MDIyNzIwMDAsImlhdCI6MTU2NjM2MjE0NywiaXNzIjoiWVgiLCJhdWQiOiJZWF9MaXR0bGVfQVBQIn0.a2moARofKv9nMpwkbpCHFl184qJdCaxjF7fs7aMnZwXORJP6BQGKy_WjQ38V4PEgBuE8rOLYAQBcg0bdHdV10oYtRQw6crFcEhrUclqP0H8W9ZnWuAgZi5PNXCwkZ41k2eTFmtBdbRtsHVxq0WdS8qt4Lj1bFY_XzRhynPoOxC5hJPLWiwiF9BsMj46g-bVyBEjvtv307Gtu_zBgKaOJYsM2G7t_JFSBStPqkYUA3uCOl9L9ctyTz7hkIRxC6m_Rs3KlkRxQK4fRmXUL2-K7nzDYNLahaxvCc1-b7B5k85BHue0hsofJM7N5IIhEQcyRhPh7QWSbmEj6Fm-u9tW7SA";
-    await app
-      .$axios({
-        type: "get",
-        url: "/api/Brochure/MerchantDetail",
-        headers: {
-          "Content-Type": "application/x-www-form-urlencoded",
-          Authorization: "Bearer " + token
-        },
-        params: { id: app.context.query.id }
-      })
-      .then(res => {
-        console.log(res.data.data);
-        let data = res.data.data;
-        return {
-          detailData: data,
-          swiperList: data.pages,
-          userId: data.userId,
-          title: data.title
-        };
-      });
+    let data = await app.$axios({
+      type: "get",
+      url: "/api/Brochure/MerchantDetail",
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded",
+        Authorization: "Bearer " + token
+      },
+      params: { id: app.context.query.id }
+    });
+    return {
+      detailData: data.data.data,
+      swiperList: data.data.data.pages,
+      userId: data.data.data.userId,
+      title: data.data.data.title
+    };
   },
   computed: {},
-  head () {
+  head() {
     return {
-      title:this.title
-    }
+      title: this.title
+    };
   },
-  created() {
-    this.getDetailList();
-    // this.browserRedirect();
+  mounted() {
+    this.browserRedirect();
   },
-  mounted() {},
   methods: {
-    async getDetailList() {
-      // await detailsApi.getMerchantDetail({ id: this.id }).then(res => {
-      //   this.detailData = res.data;
-      //   this.swiperList = res.data.pages;
-      //   this.userId = res.data.userId;
-      //   document.querySelector("title").innerText = this.detailData.title;
-      // });
-      // await this.$axios({
-      //   type:'get',
-      //   url: "/api/Brochure/HomeList",
-      //   params: params
-      // }).then(res => {
-      //   console.log(res.data.data);
-      //   let data = res.data;
-      // });
-      // homeApi.getMerchant({ userId: this.userId }).then(res => {
-      //   this.phone = res.data.servicePhone;
-      // });
-    },
     //判断设备
     browserRedirect() {
       let sUserAgent = navigator.userAgent.toLowerCase();
@@ -220,6 +195,9 @@ export default {
     .my-swp-box {
       max-width: 525px;
       margin: auto;
+      .progressive {
+        position: relative;
+      }
     }
     .my-swp-img {
       max-width: 525px;
@@ -235,20 +213,22 @@ export default {
       left: 0;
       margin: auto;
       z-index: 1;
+      animation: rotation 2s linear infinite;
     }
   }
   .big-img {
     position: absolute;
     top: 0;
+    left: 0;
     opacity: 0;
     z-index: 2;
   }
 }
 .my-swp-box {
   width: 100vw;
-  height: 100vh;
-  overflow-x: hidden;
-  overflow-y: scroll;
+  // height: 100vh;
+  overflow: hidden;
+  // overflow-y: scroll;
   // line-height: 100vh;
   background: #ccc;
 }
@@ -297,7 +277,7 @@ export default {
   right: 8px;
   bottom: 60px;
   display: inline-block;
-  overflow: hidden;
+  // overflow: hidden;
   text-align: center;
   color: #fff;
   font-size: 13px;

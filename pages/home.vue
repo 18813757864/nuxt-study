@@ -1,16 +1,25 @@
 <!--
  * @Author: wuwf
- * @Date: 2019-10-23 16:29:16
- * @LastEditTime: 2019-10-30 14:05:20
+ * @Date: 2019-10-18 09:50:03
+ * @LastEditTime: 2019-10-30 14:32:20
  * @LastEditors: Please set LastEditors
- * @Description: 宣传册列表页
+ * @Description: 商家主页
  -->
 
 <template>
   <div class="home">
-    <div class="header" :class="{'isPC':isPC}">
-      <img class="logo" src="@/assets/images/logo.png" />
+    <div class="header" :style="bgUrl">
+      <div class="header-in" :class="{'isPC':isPC}">
+        <span class="header-logo">
+          <span class="logo-img-span">
+            <img class="logo-img" @load="dealImg($event)" :src="merchantData.logo" />
+          </span>
+          <img class="logo-v" src="@/assets/images/approve.png" />
+        </span>
+        <span class="title">{{merchantData.name}}</span>
+      </div>
     </div>
+
     <!--全部-->
     <div class="page-infinite">
       <mescroll-vue
@@ -22,76 +31,84 @@
         <ul :class="{'isPC':isPC}" class="data-list" id="data-list">
           <li v-for="(item,i) in tab.list" @click="toDetails(item.id)" :key="i">
             <div class="goods-img-box">
-              <img class="goods-img" @load="dealImg($event)" :src="item.coverImage+'?limit=350'" />
+              <img
+                class="goods-img"
+                @load="dealImg($event)"
+                :src="item.coverImage + '?limit=350'"
+                alt
+              />
             </div>
             <div class="goods-name">
               <h3>{{item.title}}</h3>
-              <h4>
-                <span class="merchant">
-                  <span
-                    class="merchant-logo"
-                    :style="`background: url(${item.logo}) no-repeat center 100%;background-size:auto 100%;`"
-                  ></span>
-                  <span class="merchant-name">{{item.merchantName}}</span>
-                </span>
-                <span class="shared">
-                  <img class="shared-img" src="@/assets/images/shared.png" />
-                  <span class="shared-count">{{item.sharedCount}}</span>
-                </span>
-              </h4>
             </div>
           </li>
         </ul>
       </mescroll-vue>
     </div>
     <ul style="display:none;">
-        <li v-for="(item,i) in dataList"  :key="i">
-            <div class="goods-img-box">
-              <img class="goods-img" :src="item.coverImage+'?limit=350'" />
-            </div>
-            <div class="goods-name">
-              <h3>{{item.title}}</h3>
-              <h4>
-                <span class="merchant">
-                  <span
-                    class="merchant-logo"
-                    :style="`background: url(${item.logo}) no-repeat center 100%;background-size:auto 100%;`"
-                  ></span>
-                  <span class="merchant-name">{{item.merchantName}}</span>
-                </span>
-                <span class="shared">
-                  <img class="shared-img" src="@/assets/images/shared.png" />
-                  <span class="shared-count">{{item.sharedCount}}</span>
-                </span>
-              </h4>
-            </div>
-          </li>
-      </ul>
+      <li v-for="(item,i) in dataList" :key="i">
+        <div class="goods-img-box">
+          <img class="goods-img" :src="item.coverImage+'?limit=350'" />
+        </div>
+        <div class="goods-name">
+          <h3>{{item.title}}</h3>
+          <h4>
+            <span class="merchant">
+              <span
+                class="merchant-logo"
+                :style="`background: url(${item.logo}) no-repeat center 100%;background-size:auto 100%;`"
+              ></span>
+              <span class="merchant-name">{{item.merchantName}}</span>
+            </span>
+            <span class="shared">
+              <img class="shared-img" src="@/assets/images/shared.png" />
+              <span class="shared-count">{{item.sharedCount}}</span>
+            </span>
+          </h4>
+        </div>
+      </li>
+    </ul>
+    <div :style="{bottom:(isPC? '130px':'100px')}" class="consult">
+      <a @click="checkPhone">
+        <p>
+          <img src="@/assets/images/home-teamwork.png" alt />
+        </p>
+        <p>
+          <span>咨询</span>
+        </p>
+      </a>
+    </div>
+    <div class="consult">
+      <a @click="goBrochures">
+        <p>
+          <img src="@/assets/images/go-brochures.png" alt />
+        </p>
+        <p>
+          <span>返回</span>
+        </p>
+      </a>
+    </div>
   </div>
 </template>
 
 <script>
 // 引入mescroll的vue组件
 import MescrollVue from "mescroll.js/mescroll.vue";
-import axios from "axios";
-// import brochuresApi from "@/api/brochures";
+
+import { MessageBox } from "mint-ui";
+// import homeApi from "../../api/home";
 
 export default {
-  name: "brochures",
+  name: "home",
   components: {
     MescrollVue
   },
-  head() {
-    return {
-      title: "3B互联"
-    };
-  },
   data() {
     return {
+      userId: "",
       bgUrl: "",
       isPC: false,
       merchantData: {},
-      dataList: [],
       tab: { mescroll: null, list: [], isListInit: false } // 全部
     };
   },
@@ -100,22 +117,36 @@ export default {
       "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6IjAiLCJqdGkiOiI5ZWE3NjQwMWMwNDc0ZTA1ODBjY2U1NDMxNDJjMjFiMCIsIlVzZXJJRCI6IjAiLCJQaG9uZSI6IiIsIld4T3BlbklkIjoiIiwiV3hTZXNzaW9uS2V5IjoiIiwicm9sZSI6WyJDbGllbnRVc2VyIiwiIl0sIm5iZiI6MTU2NjM2MjE0NywiZXhwIjoyNTM0MDIyNzIwMDAsImlhdCI6MTU2NjM2MjE0NywiaXNzIjoiWVgiLCJhdWQiOiJZWF9MaXR0bGVfQVBQIn0.a2moARofKv9nMpwkbpCHFl184qJdCaxjF7fs7aMnZwXORJP6BQGKy_WjQ38V4PEgBuE8rOLYAQBcg0bdHdV10oYtRQw6crFcEhrUclqP0H8W9ZnWuAgZi5PNXCwkZ41k2eTFmtBdbRtsHVxq0WdS8qt4Lj1bFY_XzRhynPoOxC5hJPLWiwiF9BsMj46g-bVyBEjvtv307Gtu_zBgKaOJYsM2G7t_JFSBStPqkYUA3uCOl9L9ctyTz7hkIRxC6m_Rs3KlkRxQK4fRmXUL2-K7nzDYNLahaxvCc1-b7B5k85BHue0hsofJM7N5IIhEQcyRhPh7QWSbmEj6Fm-u9tW7SA";
     let data = await app.$axios({
       type: "get",
-      url: "/api/Brochure/HomeList",
+      url: "/api/Brochure/MerchantList",
       headers: {
         "Content-Type": "application/x-www-form-urlencoded",
         Authorization: "Bearer " + token
       },
-      params: { page: 1, pageSize: 15 }
+      params: { userId: app.context.query.userId, page: 1, pageSize: 15 }
+    });
+    let merchantData = await app.$axios({
+      type: "get",
+      url: "/api/HomeInfo/Merchant",
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded",
+        Authorization: "Bearer " + token
+      },
+      params: { userId: app.context.query.userId, page: 1, pageSize: 15 }
     });
     return {
-      dataList: data.data.data
+      dataList: data.data.data,
+      userId: app.context.query.userId,
+      merchantData: merchantData.data.data,
+      bgUrl: "background: url(" +merchantData.data.data.image +") no-repeat center/100% auto;"
+    };
+  },
+  head() {
+    return {
+      title: this.merchantData.enterpriseName
     };
   },
   mounted() {
     this.browserRedirect();
-  },
-  activated() {
-    // document.querySelector(".mescroll").scrollTop = sessionStorage.domScrollTop;
   },
   methods: {
     toDetails(id) {
@@ -125,6 +156,12 @@ export default {
       });
       let domScrollTop = document.querySelector(".mescroll").scrollTop;
       sessionStorage.domScrollTop = domScrollTop;
+    },
+    goBrochures() {
+      this.$router.push({
+        path: "/brochures"
+      });
+      document.querySelector("title").innerText = "3B互联";
     },
     //处理图片大小及位置
     dealImg(event) {
@@ -159,6 +196,34 @@ export default {
         this.isPC = true;
       }
     },
+    pushHistory() {
+      let state = {
+        title: "title",
+        url: "#"
+      };
+      window.history.pushState(state, "title", "#");
+    },
+    checkPhone() {
+      if (!this.merchantData.servicePhone) {
+        if (this.isPC) {
+          MessageBox.alert("暂无业务咨询电话", "提示");
+        } else {
+          window.addEventListener("popstate", this.checkReturn, true);
+          MessageBox.alert("暂无业务咨询电话", "提示").then(action => {
+            window.removeEventListener("popstate", this.checkReturn, true);
+          });
+        }
+      } else if (this.isPC) {
+        MessageBox.alert(this.merchantData.servicePhone, "请拨打电话");
+      } else {
+        window.location.href = "tel:" + this.merchantData.servicePhone;
+      }
+    },
+    checkReturn(e) {
+      this.pushHistory();
+      MessageBox.close(false);
+      window.removeEventListener("popstate", this.checkReturn, true);
+    },
     srcollAddEventListener() {
       let _this = this;
     },
@@ -184,6 +249,16 @@ export default {
         }, // 上拉回调,此处可简写;
         noMoreSize: 4, // 如果列表已无数据,可设置列表的总数量要大于半页才显示无更多数据;避免列表数据过少(比如只有一条数据),显示无更多数据会不好看; 默认5
         htmlNodata: '<p class="upwarp-nodata">-- 暂无更多数据 --</p>'
+        // empty: {
+        //   warpId: emptyWarpId, // 父布局的id;
+        //   // icon: "http://www.mescroll.com/img/mescroll-empty.png", // 图标,默认null
+        //   tip: "暂无相关数据~", // 提示
+        //   btntext: "去逛逛 >", // 按钮,默认""
+        //   btnClick: function() {
+        //     // 点击按钮的回调,默认null
+        //     alert("点击了按钮,具体逻辑自行实现");
+        //   }
+        // },
       };
     },
     /* 下拉刷新的回调 */
@@ -219,12 +294,12 @@ export default {
     ) {
       let params = {
         page: pageNum,
-        // userId: this.userId,
+        userId: this.userId,
         pageSize: pageSize
       };
       await this.$axios({
         type: "get",
-        url: "/api/Brochure/HomeList",
+        url: "/api/Brochure/MerchantList",
         params: params
       }).then(res => {
         let data = res.data;
@@ -270,16 +345,12 @@ export default {
       line-height: 65px;
     }
   }
-  .header.isPC {
+  .header-in.isPC {
     max-width: 825px;
     margin: auto;
-    .logo {
-      height: 30px;
-    }
-  }
-  .logo {
-    height: 45px;
-    vertical-align: middle;
+    // .logo{
+    //   width: ;
+    // }
   }
   .header-logo {
     position: relative;
@@ -354,8 +425,8 @@ export default {
         line-height: 14px;
         padding: 10px 6px;
         color: #18181a;
-        background: #fff;
         width: 100%;
+        background: #fff;
       }
       h3 {
         text-overflow: -o-ellipsis-lastline;
@@ -369,44 +440,6 @@ export default {
         line-height: 18px;
         padding-top: 4px;
         font-size: 13px;
-      }
-      h4 {
-        padding-top: 15px;
-        color: #909099;
-        overflow: hidden;
-        // height: 50px;
-        // line-height: 22px;
-      }
-      .merchant {
-        float: left;
-        height: 24px;
-        line-height: 24px;
-      }
-      .merchant-logo {
-        display: inline-block;
-        width: 19px;
-        height: 19px;
-        border-radius: 50%;
-        margin-right: 5px;
-        vertical-align: super;
-      }
-      .merchant-name {
-        display: inline-block;
-        width: 60px;
-        overflow: hidden;
-        white-space: nowrap;
-        text-overflow: ellipsis;
-      }
-      .shared {
-        float: right;
-        display: inline-block;
-        height: 24px;
-        line-height: 24px;
-      }
-      .shared-img {
-        width: 14px;
-        vertical-align: middle;
-        margin-right: 5px;
       }
     }
     .goods-img-box {
@@ -434,6 +467,32 @@ export default {
         font-size: 10px;
       }
     }
+  }
+  .consult {
+    cursor: pointer;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background: #f7584e;
+    position: fixed;
+    right: 12px;
+    bottom: 25px;
+    text-align: center;
+    font-size: 11px;
+    padding-top: 8px;
+    a {
+      color: #fff;
+    }
+    img {
+      width: 21px;
+      height: 21px;
+    }
+    svg {
+      color: #fff;
+      font-size: 12px;
+    }
+  }
+  .consult.isPC {
   }
 }
 </style>

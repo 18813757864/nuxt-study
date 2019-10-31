@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2019-10-28 15:46:41
- * @LastEditTime: 2019-10-29 16:57:35
+ * @LastEditTime: 2019-10-30 14:30:21
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \3B-mobiled:\work\nuxt-study\nuxt.config.js
@@ -42,7 +42,8 @@ module.exports = {
   */
   plugins: [
     { src: '~plugins/flexble.js', ssr: false },
-    { src: '~/plugins/axios', ssr: false }
+    { src: '~/plugins/axios', ssr: false },
+    { src: '~/plugins/mint-ui', ssr: false }
   ],
   postcss: [
     require('postcss-pxtorem')({
