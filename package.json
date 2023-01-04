@@ -20,7 +20,7 @@
     "express": "^4.16.4",
     "mescroll.js": "^1.4.1",
     "mint-ui": "^2.2.13",
-    "nuxt": "^2.0.0",
+    "nuxt": "^2.15.8",
     "postcss-pxtorem": "^4.0.1"
   },
   "devDependencies": {
